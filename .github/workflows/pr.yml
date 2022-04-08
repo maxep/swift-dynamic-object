@@ -1,0 +1,31 @@
+name: PR
+
+on: pull_request
+
+jobs:
+  build:
+
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build
+      run: swift build
+      
+    - name: Run tests
+      run: swift test --enable-code-coverage
+
+    - name: Test coverage
+      uses: maxep/spm-lcov-action@0.3.0
+      with:
+        output-file: ./coverage/lcov.info
+
+    - name: Report test coverage
+      uses: romeovs/lcov-reporter-action@v0.2.19
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        lcov-file: ./coverage/lcov.info
+
+    - name: pod lib lint
+      run: pod lib lint --private
