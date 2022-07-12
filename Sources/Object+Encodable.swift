@@ -40,9 +40,6 @@ extension Object: Encodable {
         case .Nil:
             var container = encoder.singleValueContainer()
             try container.encodeNil()
-        case .Date(let value):
-            var container = encoder.singleValueContainer()
-            try container.encode(value)
         case .Bool(let value):
             var container = encoder.singleValueContainer()
             try container.encode(value)
@@ -90,8 +87,6 @@ extension KeyedEncodingContainer where Key == DynamicCodingKey {
             case .Double(let value):
                 try encode(value, forKey: key)
             case .String(let value):
-                try encode(value, forKey: key)
-            case .Date(let value):
                 try encode(value, forKey: key)
             case .Array(let value):
                 var container = nestedUnkeyedContainer(forKey: key)

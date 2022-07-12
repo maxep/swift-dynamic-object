@@ -243,7 +243,7 @@ class ObjectTests: XCTestCase {
 
         object.string = Date(timeIntervalSinceReferenceDate: 0)
         string = object.string
-        XCTAssertEqual(string, "2001-01-01 00:00:00 +0000")
+        XCTAssertEqual(string, "2001-01-01T00:00:00Z")
     }
 
     func testSetDoubleMember() {
@@ -316,17 +316,6 @@ class ObjectTests: XCTestCase {
         XCTAssertNotNil(object.nested)
         XCTAssertNotNil(object.nested.nested)
         XCTAssertEqual(object.nested.nested.nested, "value")
-    }
-
-    func testDateValue() {
-        let object: Object = "2018-09-12T19:56:56+00:00"
-        XCTAssertNotNil(object.dateValue)
-    }
-
-    func testURLValue() {
-        var object = Object.Nil
-        object.value = URL(string: "https://test.com/object/1")
-        XCTAssertNotNil(object.value.urlValue)
     }
 
     func testNotIndexedObjectFailure() {
@@ -408,7 +397,6 @@ class ObjectTests: XCTestCase {
     func testDecoding() throws {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .iso8601
         let object = try decoder.decode(Object.self, from: self.json)
 
         XCTAssertEqual(object.bool, true)

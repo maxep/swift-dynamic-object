@@ -150,10 +150,6 @@ extension UnkeyedDecodingContainer {
             return .Double(value)
         }
 
-        if let value = try? decode(Date.self) {
-            return .Date(value)
-        }
-
         if let value = try? decode(String.self) {
             return .String(value)
         }
@@ -194,10 +190,6 @@ extension SingleValueDecodingContainer {
 
         if let value = try? decode(Double.self) {
             return .Double(value)
-        }
-
-        if let value = try? decode(Date.self) {
-            return .Date(value)
         }
 
         if let value = try? decode(String.self) {

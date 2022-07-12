@@ -82,7 +82,6 @@ class ObjectDecodableTests: XCTestCase {
 
     func testDecoding() throws {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
         decoder.keyDecodingStrategy = .convertFromSnakeCase
 
         let object = try decoder.decode(Object.self, from: self.json)
@@ -95,7 +94,6 @@ class ObjectDecodableTests: XCTestCase {
     func testEncoding() throws {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        decoder.dateDecodingStrategy = .iso8601
 
         let model = try decoder.decode(Model.self, from: self.json)
         let encoder = ObjectEncoder()

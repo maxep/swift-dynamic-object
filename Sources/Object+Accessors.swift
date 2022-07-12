@@ -59,7 +59,7 @@ extension Object {
         let encoder = ObjectEncoder()
 
         switch self {
-        case .Nil, .Bool, .Int, .Double, .String, .Date:
+        case .Nil, .Bool, .Int, .Double, .String:
             let encodable = try transform(self)
             return try encoder.encode(encodable)
 
@@ -104,7 +104,7 @@ extension Object {
         let encoder = ObjectEncoder()
 
         switch self {
-        case .Nil, .Bool, .Int, .Double, .String, .Date:
+        case .Nil, .Bool, .Int, .Double, .String:
             guard let member = try transform(self) else { return .Nil }
             return try encoder.encode(member)
 

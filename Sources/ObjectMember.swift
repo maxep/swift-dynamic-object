@@ -161,8 +161,6 @@ extension ObjectDecodable where Self: BinaryFloatingPoint {
                 throw DecodingError.dataConversionError(to: Self.self, in: container) 
             }
             self.init(int)
-        case .Date(let value):
-            self.init(value.timeIntervalSince1970)
         default:
             throw DecodingError.dataConversionError(to: Self.self, in: container)
         }
@@ -195,7 +193,7 @@ extension String: ObjectMember {
     ///   is invalid.
     init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
         switch container.object {
-        case .Bool, .Int, .Double, .String, .Date:
+        case .Bool, .Int, .Double, .String:
             self = String(describing: container.object)
         default:
             throw DecodingError.dataConversionError(to: Self.self, in: container)
@@ -211,6 +209,14 @@ extension String: ObjectMember {
 
 // MARK: - Convert Date
 
+let RFC3339DateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    return formatter
+}()
+
 extension Date: ObjectMember {
 
     /// Creates from an object.
@@ -219,22 +225,23 @@ extension Date: ObjectMember {
     /// - throws: `DecodingError.dataCorruptedError` if the encountered object
     ///   is invalid.
     init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        switch container.object {
-        case .Date(let value):
-            self = value
-        default:
+        guard 
+            case let .String(value) = container.object,
+            let date = RFC3339DateFormatter.date(from: value)
+        else {
             throw DecodingError.dataConversionError(to: Self.self, in: container)
         }
+        self = date
     }
 
-    /// Convert to .Date object.
+    /// Convert to .String object.
     func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        container.object = .Date(self)
+        container.object = .String(RFC3339DateFormatter.string(from: self))
     }
 
 }
 
-// MARK: - Convert Date
+// MARK: - Convert Data
 
 extension Data: ObjectMember {
 
@@ -253,7 +260,7 @@ extension Data: ObjectMember {
         self = data
     }
 
-    /// Convert to .Date object.
+    /// Convert to .String object.
     func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
         container.object = .String(base64EncodedString())
     }

@@ -44,7 +44,6 @@ public enum Object {
     case Double(Double)
     case String(String)
     case Array([Object])
-    case Date(Date)
     case JSON(JSON)
 
     /// Accesses the value associated with the given key for reading and writing
@@ -376,8 +375,6 @@ extension Object: CustomStringConvertible {
             return Swift.String(describing: value)
         case .Array(let value):
             return Swift.String(describing: value)
-        case .Date(let value):
-            return Swift.String(describing: value)
         case .JSON(let value):
             let encoder = JSONEncoder()
             guard
@@ -409,8 +406,6 @@ extension Object: CustomDebugStringConvertible {
             case .String(let value):
                 return Swift.String(reflecting: value)
             case .Array(let value):
-                return Swift.String(reflecting: value)
-            case .Date(let value):
                 return Swift.String(reflecting: value)
             case .JSON(let value):
                 return self[#function] ?? {
@@ -454,8 +449,6 @@ extension Object: Equatable {
         case (.String(let lhs), .String(let rhs)):
             return lhs == rhs
         case (.Array(let lhs), .Array(let rhs)):
-            return lhs == rhs
-        case (.Date(let lhs), .Date(let rhs)):
             return lhs == rhs
         case (.JSON(let lhs), .JSON(let rhs)):
             return lhs == rhs

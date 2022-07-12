@@ -415,7 +415,6 @@ internal class ObjectMemberDecoder: Decoder {
             return try T(from: decoder)
         }
     }
-
 }
 
 // MARK: Decoder Error extension
@@ -428,7 +427,6 @@ extension DecodingError {
     /// path.
     ///
     /// - Parameters:
-    ///   - object: The Object to vonvert.
     ///   - type: The type to convert to.
     ///   - container: The container in which the corrupted data was
     ///   accessed.
