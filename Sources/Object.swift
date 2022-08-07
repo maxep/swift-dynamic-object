@@ -46,6 +46,16 @@ public enum Object {
     case Array([Object])
     case JSON(JSON)
 
+    init() {
+        self = .Nil
+    }
+
+    init(_ block: (inout Object) -> Void) {
+        var object: Object = .Nil
+        block(&object)
+        self = object
+    }
+
     /// Accesses the value associated with the given key for reading and writing
     /// a JSON type.
     ///
@@ -120,7 +130,6 @@ public enum Object {
         get { return self[member] }
         set { self[member] = newValue }
     }
-
 }
 
 // MARK: - ExpressibleByNilLiteral extension
@@ -208,7 +217,6 @@ extension Object: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
         self = .String(value)
     }
-
 }
 
 // MARK: - ExpressibleByArrayLiteral extension
@@ -219,7 +227,6 @@ extension Object: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: Object...) {
         self = .Array(elements)
     }
-
 }
 
 // MARK: - ExpressibleByDictionaryLiteral extension
@@ -236,7 +243,6 @@ extension Object: ExpressibleByDictionaryLiteral {
 
         self = .JSON(json)
     }
-
 }
 
 // MARK: - Sequence extension
@@ -282,8 +288,8 @@ extension Object: Sequence {
     public var isEmpty: Bool {
         get {
             switch self {
-            case .Nil:
-                return true
+            case .String(let string):
+                return string.isEmpty
             case .Array(let array):
                 return array.isEmpty
             case .JSON(let json):
@@ -303,6 +309,8 @@ extension Object: Sequence {
     public var count: Int {
         get {
             switch self {
+            case .String(let string):
+                return string.count
             case .Array(let array):
                 return array.count
             case .JSON(let json):
@@ -320,6 +328,8 @@ extension Object: Sequence {
     public var underestimatedCount: Int {
         get {
             switch self {
+            case .String(let string):
+                return string.underestimatedCount
             case .Array(let array):
                 return array.underestimatedCount
             case .JSON(let json):
@@ -348,6 +358,13 @@ extension Object: Sequence {
             return AnyIterator {
                 guard let next = iterator.next() else { return nil }
                 return (nil, next)
+            }
+
+        case .String(let string):
+            var iterator = string.makeIterator()
+            return AnyIterator {
+                guard let next = iterator.next() else { return nil }
+                return (nil, .String("\(next)"))
             }
 
         default:
@@ -456,5 +473,4 @@ extension Object: Equatable {
             return false
         }
     }
-
 }

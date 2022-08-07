@@ -67,7 +67,6 @@ open class ObjectEncoder {
         try container.encode(value)
         return container.object
     }
-
 }
 
 // swiftlint:enable closing_brace_whitespace
@@ -81,7 +80,7 @@ internal protocol ObjectEncodingContainer {
     var object: Object { get }
 }
 
-internal class ObjectMemberEncoder: Encoder, ObjectEncodingContainer {
+internal class ObjectMemberEncoder: Encoder {
 
     let codingPath: [CodingKey]
 
@@ -299,8 +298,7 @@ internal class ObjectMemberEncoder: Encoder, ObjectEncodingContainer {
         }
 
         func encode<T>(_ value: T) throws where T: Encodable {
-            let container = SingleValueContainer(path: codingPath)
-            try container.encode(value)
+            try nestedSingleValueContainer().encode(value)
         }
 
         func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
@@ -409,7 +407,6 @@ internal class ObjectMemberEncoder: Encoder, ObjectEncodingContainer {
             }
         }
     }
-
 }
 
 // MARK: Decoder Error extension

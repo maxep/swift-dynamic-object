@@ -35,7 +35,6 @@ extension Object: Decodable {
     public init(from decoder: Decoder) throws {
         self = try decoder.decode(Object.self)
     }
-
 }
 
 // MARK: - Decoder extension
@@ -165,7 +164,6 @@ extension UnkeyedDecodingContainer {
         let context = DecodingError.Context(codingPath: codingPath, debugDescription: "Invalid type in JSON")
         throw DecodingError.typeMismatch(Object.self, context)
     }
-
 }
 
 // MARK: - SingleValueDecodingContainer extension
@@ -203,5 +201,4 @@ extension SingleValueDecodingContainer {
         let context = DecodingError.Context(codingPath: codingPath, debugDescription: "Invalid type in JSON")
         throw DecodingError.typeMismatch(Object.self, context)
     }
-
 }

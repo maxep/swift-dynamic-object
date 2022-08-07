@@ -26,36 +26,6 @@ import XCTest
 
 class ObjectTests: XCTestCase {
 
-    let json = """
-    {
-        "id": 123456,
-        "url": "https://test.com/object/1",
-        "title": "Response",
-        "date": "2018-09-12T19:56:56+00:00",
-        "null": null,
-        "bool": true,
-        "nested": {
-            "id": 123456,
-            "url": "https://test.com/object/2",
-            "title": "Nested",
-            "date": "2018-09-12T19:56:56+00:00"
-        },
-        "empty": {},
-        "array": [
-            1,
-            "2",
-            3.4,
-            {
-                "five": 5
-            },
-            "2019-01-01T00:00:00+00:00",
-            null
-        ],
-        "1": "one",
-        "snake_case_key": "🐍"
-    }
-    """.data(using: .utf8)!
-
     struct Model: Decodable {
         let id: Int
         let url: URL
@@ -394,32 +364,6 @@ class ObjectTests: XCTestCase {
         XCTAssertEqual(object.underestimatedCount, 0)
     }
 
-    func testDecoding() throws {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let object = try decoder.decode(Object.self, from: self.json)
-
-        XCTAssertEqual(object.bool, true)
-        XCTAssertEqual(object.id, 123456)
-        XCTAssertEqual(object.title, "Response")
-        XCTAssertEqual(object.url, "https://test.com/object/1")
-        XCTAssertEqual(try object.url.unwrap(), URL(string: "https://test.com/object/1"))
-        XCTAssertNotNil(object.nested)
-        XCTAssertEqual(object.nested.id, 123456)
-        XCTAssertNotNil(object.null)
-        XCTAssertNotNil(object.array)
-        XCTAssertEqual(object.array.underestimatedCount, 6)
-        XCTAssertEqual(object.array[0], 1)
-        XCTAssertEqual(object.array[3].five, 5)
-        XCTAssertNotNil(object.date)
-        XCTAssertEqual(object.1, "one")
-        XCTAssertEqual(object.snakeCaseKey, "🐍")
-
-        let model: Model = try ObjectDecoder().decode(from: object)
-        XCTAssertEqual(model.id, 123456)
-        XCTAssertEqual(object.title, "Response")
-    }
-
     func testEncoding() throws {
         let encoder = JSONEncoder()
 
@@ -497,7 +441,16 @@ class ObjectTests: XCTestCase {
     }
 
     func testMapObject() throws {
-        var object = try JSONDecoder().decode(Object.self, from: self.json)
+        let json = """
+        {
+            "id": 123456,
+            "nested": {
+                "id": 123456
+            }
+        }
+        """.data(using: .utf8)!
+
+        var object = try JSONDecoder().decode(Object.self, from: json)
 
         object = try object.map { _ in 0 }
         XCTAssertEqual(object.id, 0)
