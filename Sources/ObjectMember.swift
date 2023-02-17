@@ -80,7 +80,6 @@ extension Bool: ObjectMember {
     func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
         container.object = .Bool(self)
     }
-
 }
 
 // MARK: - Convert Integer
@@ -107,7 +106,6 @@ extension ObjectDecodable where Self: BinaryInteger {
             throw DecodingError.dataConversionError(to: Self.self, in: container)
         }
     }
-
 }
 
 extension ObjectEncodable where Self: BinaryInteger {
@@ -165,7 +163,6 @@ extension ObjectDecodable where Self: BinaryFloatingPoint {
             throw DecodingError.dataConversionError(to: Self.self, in: container)
         }
     }
-
 }
 
 extension ObjectEncodable where Self: BinaryFloatingPoint {
@@ -175,7 +172,6 @@ extension ObjectEncodable where Self: BinaryFloatingPoint {
         let value = Double(self)
         container.object = .Double(value)
     }
-
 }
 
 extension Double: ObjectMember { }
@@ -238,7 +234,6 @@ extension Date: ObjectMember {
     func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
         container.object = .String(RFC3339DateFormatter.string(from: self))
     }
-
 }
 
 // MARK: - Convert Data
@@ -264,7 +259,6 @@ extension Data: ObjectMember {
     func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
         container.object = .String(base64EncodedString())
     }
-
 }
 
 // MARK: - Convert Enum
@@ -283,7 +277,6 @@ extension ObjectDecodable where Self: RawRepresentable, Self.RawValue: ObjectDec
         }
         self = value
     }
-
 }
 
 extension ObjectEncodable where Self: RawRepresentable, Self.RawValue: ObjectEncodable {
@@ -292,7 +285,6 @@ extension ObjectEncodable where Self: RawRepresentable, Self.RawValue: ObjectEnc
     func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
         try rawValue.encode(to: container)
     }
-
 }
 
 // MARK: - Convert URL
@@ -355,7 +347,6 @@ extension Optional: ObjectDecodable where Wrapped: ObjectDecodable {
             self = try Wrapped(from: container)
         }
     }
-
 }
 
 extension Optional: ObjectEncodable where Wrapped: ObjectEncodable {

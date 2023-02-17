@@ -65,11 +65,11 @@ extension Object {
 
         case .Array(let value):
             let array: [Object] = try value.map { try $0.map(transform) }
-            return Object.Array(array)
+            return .Array(array)
 
         case .JSON(let value):
             let json: JSON = try value.mapValues { try $0.map(transform) }
-            return Object.JSON(json)
+            return .JSON(json)
         }
     }
 
@@ -110,28 +110,25 @@ extension Object {
 
         case .Array(let value):
             let array: [Object] = try value.compactMap {
-                // swiftlint:disable:next redundant_nil_coalescing ; overrided `??` operator on Object.Nil
                 try $0.compactMap(transform) ?? nil
             }
 
-            return array.isEmpty ? .Nil : Object.Array(array)
+            return array.isEmpty ? .Nil : .Array(array)
 
         case .JSON(let value):
             let json: JSON = try value.compactMapValues {
-                // swiftlint:disable:next redundant_nil_coalescing ; overrided `??` operator on Object.Nil
                 try $0.compactMap(transform) ?? nil
             }
 
-            return json.isEmpty ? .Nil : Object.JSON(json)
+            return json.isEmpty ? .Nil : .JSON(json)
         }
     }
-
 }
 
 extension Object {
 
     func object(forKey key: String) -> Object {
-        guard case .JSON(let json) = self, let value = json[key] else { return nil }
+        guard case .JSON(let json) = self, let value = json[key] else { return .Nil }
         return value
     }
 
@@ -283,7 +280,6 @@ extension Object {
         get { try? object(forKey: key).unwrap() }
         set { try? set(newValue, forKey: key) }
     }
-
 }
 
 extension Optional where Wrapped == Object {

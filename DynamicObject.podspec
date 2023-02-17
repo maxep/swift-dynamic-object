@@ -6,6 +6,7 @@ Pod::Spec.new do |s|
   s.homepage = 'https://github.com/maxep/swift-dynamic-object'
   s.authors = { 'Maxime Epain' => 'me@maxep.me' }
   s.source = { :git => 'https://github.com/maxep/swift-dynamic-object.git', :tag => s.version }
+  s.swift_version = '5.6'
 
   s.ios.deployment_target = '12.2'
   s.osx.deployment_target = '10.14.4'

@@ -53,14 +53,13 @@ extension Object: Encodable {
             var container = encoder.singleValueContainer()
             try container.encode(value)
         case .Array(let value):
-            var container = encoder.unkeyedContainer()
+            var container = encoder.singleValueContainer()
             try container.encode(value)
         case .JSON(let value):
             var container = encoder.container(keyedBy: DynamicCodingKey.self)
             try container.encode(value)
         }
     }
-
 }
 
 // MARK: - KeyedEncodingContainer extension
@@ -97,5 +96,4 @@ extension KeyedEncodingContainer where Key == DynamicCodingKey {
             }
         }
     }
-
 }

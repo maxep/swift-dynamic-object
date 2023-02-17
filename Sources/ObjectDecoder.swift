@@ -73,7 +73,6 @@ open class ObjectDecoder {
     open func decode<T>(from object: Object) throws -> T where T: Decodable {
         try decode(T.self, from: object)
     }
-
 }
 
 // swiftlint:enable closing_brace_whitespace
@@ -330,7 +329,6 @@ internal class ObjectMemberDecoder: Decoder {
         mutating func superDecoder() throws -> Decoder {
             ObjectMemberDecoder(object, path: codingPath)
         }
-
     }
 
     struct SingleValueContainer: SingleValueDecodingContainer {
