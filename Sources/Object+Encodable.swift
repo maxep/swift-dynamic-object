@@ -26,74 +26,74 @@ import Foundation
 
 extension Object: Encodable {
 
-    /// Encodes this object into the given encoder.
-    ///
-    /// If the value fails to encode anything, `encoder` will encode an empty
-    /// keyed container in its place.
-    ///
-    /// This function throws an error if any values are invalid for the given
-    /// objects format.
-    ///
-    /// - Parameter encoder: The encoder to write data to.
-    public func encode(to encoder: Encoder) throws {
-        switch self {
-        case .Nil:
-            var container = encoder.singleValueContainer()
-            try container.encodeNil()
-        case .Bool(let value):
-            var container = encoder.singleValueContainer()
-            try container.encode(value)
-        case .Int(let value):
-            var container = encoder.singleValueContainer()
-            try container.encode(value)
-        case .Double(let value):
-            var container = encoder.singleValueContainer()
-            try container.encode(value)
-        case .String(let value):
-            var container = encoder.singleValueContainer()
-            try container.encode(value)
-        case .Array(let value):
-            var container = encoder.singleValueContainer()
-            try container.encode(value)
-        case .JSON(let value):
-            var container = encoder.container(keyedBy: DynamicCodingKey.self)
-            try container.encode(value)
-        }
+  /// Encodes this object into the given encoder.
+  ///
+  /// If the value fails to encode anything, `encoder` will encode an empty
+  /// keyed container in its place.
+  ///
+  /// This function throws an error if any values are invalid for the given
+  /// objects format.
+  ///
+  /// - Parameter encoder: The encoder to write data to.
+  public func encode(to encoder: Encoder) throws {
+    switch self {
+    case .Nil:
+      var container = encoder.singleValueContainer()
+      try container.encodeNil()
+    case .Bool(let value):
+      var container = encoder.singleValueContainer()
+      try container.encode(value)
+    case .Int(let value):
+      var container = encoder.singleValueContainer()
+      try container.encode(value)
+    case .Double(let value):
+      var container = encoder.singleValueContainer()
+      try container.encode(value)
+    case .String(let value):
+      var container = encoder.singleValueContainer()
+      try container.encode(value)
+    case .Array(let value):
+      var container = encoder.singleValueContainer()
+      try container.encode(value)
+    case .JSON(let value):
+      var container = encoder.container(keyedBy: DynamicCodingKey.self)
+      try container.encode(value)
     }
+  }
 }
 
 // MARK: - KeyedEncodingContainer extension
 
 extension KeyedEncodingContainer where Key == DynamicCodingKey {
 
-    /// Encodes the given value.
-    ///
-    /// - parameter value: The value to encode
-    /// - throws: `EncodingError.invalidValue` if the given value is invalid in
-    ///   the current context for this format.
-    mutating func encode(_ value: JSON) throws {
+  /// Encodes the given value.
+  ///
+  /// - parameter value: The value to encode
+  /// - throws: `EncodingError.invalidValue` if the given value is invalid in
+  ///   the current context for this format.
+  mutating func encode(_ value: JSON) throws {
 
-        for object in value {
-            let key = DynamicCodingKey(object.key)
+    for object in value {
+      let key = DynamicCodingKey(object.key)
 
-            switch object.value {
-            case .Nil:
-                try encodeNil(forKey: key)
-            case .Bool(let value):
-                try encode(value, forKey: key)
-            case .Int(let value):
-                try encode(value, forKey: key)
-            case .Double(let value):
-                try encode(value, forKey: key)
-            case .String(let value):
-                try encode(value, forKey: key)
-            case .Array(let value):
-                var container = nestedUnkeyedContainer(forKey: key)
-                try container.encode(contentsOf: value)
-            case .JSON(let value):
-                var container = nestedContainer(keyedBy: DynamicCodingKey.self, forKey: key)
-                try container.encode(value)
-            }
-        }
+      switch object.value {
+      case .Nil:
+        try encodeNil(forKey: key)
+      case .Bool(let value):
+        try encode(value, forKey: key)
+      case .Int(let value):
+        try encode(value, forKey: key)
+      case .Double(let value):
+        try encode(value, forKey: key)
+      case .String(let value):
+        try encode(value, forKey: key)
+      case .Array(let value):
+        var container = nestedUnkeyedContainer(forKey: key)
+        try container.encode(contentsOf: value)
+      case .JSON(let value):
+        var container = nestedContainer(keyedBy: DynamicCodingKey.self, forKey: key)
+        try container.encode(value)
+      }
     }
+  }
 }

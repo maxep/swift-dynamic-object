@@ -3,19 +3,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "DynamicObject",
-    products: [
-        .library(name: "DynamicObject", targets: ["DynamicObject"])
-    ],
-    targets: [
-        .target(
-            name: "DynamicObject",
-            path: "Sources"
-        ),
-        .testTarget(
-            name: "DynamicObjectTests",
-            dependencies: ["DynamicObject"],
-            path: "Tests"
-        )
-    ]
+  name: "DynamicObject",
+  products: [
+    .library(name: "DynamicObject", targets: ["DynamicObject"])
+  ],
+  targets: [
+    .target(
+      name: "DynamicObject",
+      path: "Sources"
+    ),
+    .testTarget(
+      name: "DynamicObjectTests",
+      dependencies: ["DynamicObject"],
+      path: "Tests"
+    ),
+  ]
 )

@@ -25,23 +25,23 @@ import Foundation
 /// A type that can decode itself from an `Object` representation.
 protocol ObjectDecodable {
 
-    /// Creates a new instance by decoding from the given `Object`.
-    ///
-    /// This initializer throws an error if reading from the decoder fails, or
-    /// if the data read is corrupted or otherwise invalid.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws
+  /// Creates a new instance by decoding from the given `Object`.
+  ///
+  /// This initializer throws an error if reading from the decoder fails, or
+  /// if the data read is corrupted or otherwise invalid.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws
 }
 
 /// A type that can encode itself to an `Object` representation.
 protocol ObjectEncodable {
 
-    /// Encodes this value into an `Object`.
-    /// - Parameter path: The coding path to this member,
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws
+  /// Encodes this value into an `Object`.
+  /// - Parameter path: The coding path to this member,
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws
 }
 
 /// A type that can convert itself into and out of an `Object` representation.
@@ -55,259 +55,263 @@ typealias ObjectMember = ObjectDecodable & ObjectEncodable
 
 extension Bool: ObjectMember {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        switch container.object {
-        case .Bool(let value):
-            self = value
-        case .Int(let value):
-            self = value != 0
-        case .Double(let value):
-            self = value != 0
-        case .String(let value):
-            guard let bool = Bool(value) else { throw DecodingError.dataConversionError(to: Self.self, in: container) }
-            self = bool
-        default:
-            throw DecodingError.dataConversionError(to: Self.self, in: container)
-        }
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    switch container.object {
+    case .Bool(let value):
+      self = value
+    case .Int(let value):
+      self = value != 0
+    case .Double(let value):
+      self = value != 0
+    case .String(let value):
+      guard let bool = Bool(value) else {
+        throw DecodingError.dataConversionError(to: Self.self, in: container)
+      }
+      self = bool
+    default:
+      throw DecodingError.dataConversionError(to: Self.self, in: container)
     }
+  }
 
-    /// Converts to .Bool object.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        container.object = .Bool(self)
-    }
+  /// Converts to .Bool object.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    container.object = .Bool(self)
+  }
 }
 
 // MARK: - Convert Integer
 
 extension ObjectDecodable where Self: BinaryInteger {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        switch container.object {
-        case .Bool(let value):
-            self = value ? 1 : 0
-        case .Int(let value):
-            self.init(value)
-        case .Double(let value):
-            self.init(value)
-        case .String(let value):
-            guard let int = Int(value) else { throw DecodingError.dataConversionError(to: Self.self, in: container) }
-            self.init(int)
-        default:
-            throw DecodingError.dataConversionError(to: Self.self, in: container)
-        }
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    switch container.object {
+    case .Bool(let value):
+      self = value ? 1 : 0
+    case .Int(let value):
+      self.init(value)
+    case .Double(let value):
+      self.init(value)
+    case .String(let value):
+      guard let int = Int(value) else {
+        throw DecodingError.dataConversionError(to: Self.self, in: container)
+      }
+      self.init(int)
+    default:
+      throw DecodingError.dataConversionError(to: Self.self, in: container)
     }
+  }
 }
 
 extension ObjectEncodable where Self: BinaryInteger {
 
-    /// Convert to .Int object.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        let value = Int64(self)
-        container.object = .Int(value)
-    }
+  /// Convert to .Int object.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    let value = Int64(self)
+    container.object = .Int(value)
+  }
 }
 
-extension Int: ObjectMember { }
+extension Int: ObjectMember {}
 
-extension Int8: ObjectMember { }
+extension Int8: ObjectMember {}
 
-extension Int16: ObjectMember { }
+extension Int16: ObjectMember {}
 
-extension Int32: ObjectMember { }
+extension Int32: ObjectMember {}
 
-extension Int64: ObjectMember { }
+extension Int64: ObjectMember {}
 
-extension UInt: ObjectMember { }
+extension UInt: ObjectMember {}
 
-extension UInt8: ObjectMember { }
+extension UInt8: ObjectMember {}
 
-extension UInt16: ObjectMember { }
+extension UInt16: ObjectMember {}
 
-extension UInt32: ObjectMember { }
+extension UInt32: ObjectMember {}
 
-extension UInt64: ObjectMember { }
+extension UInt64: ObjectMember {}
 
 // MARK: - Convert Floating
 
 extension ObjectDecodable where Self: BinaryFloatingPoint {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        switch container.object {
-        case .Bool(let value):
-            self = value ? 1 : 0
-        case .Int(let value):
-            self.init(value)
-        case .Double(let value):
-            self.init(value)
-        case .String(let value):
-            guard let int = Double(value) else { 
-                throw DecodingError.dataConversionError(to: Self.self, in: container) 
-            }
-            self.init(int)
-        default:
-            throw DecodingError.dataConversionError(to: Self.self, in: container)
-        }
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    switch container.object {
+    case .Bool(let value):
+      self = value ? 1 : 0
+    case .Int(let value):
+      self.init(value)
+    case .Double(let value):
+      self.init(value)
+    case .String(let value):
+      guard let int = Double(value) else {
+        throw DecodingError.dataConversionError(to: Self.self, in: container)
+      }
+      self.init(int)
+    default:
+      throw DecodingError.dataConversionError(to: Self.self, in: container)
     }
+  }
 }
 
 extension ObjectEncodable where Self: BinaryFloatingPoint {
 
-    /// Convert to .Double object.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        let value = Double(self)
-        container.object = .Double(value)
-    }
+  /// Convert to .Double object.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    let value = Double(self)
+    container.object = .Double(value)
+  }
 }
 
-extension Double: ObjectMember { }
+extension Double: ObjectMember {}
 
-extension Float: ObjectMember { }
+extension Float: ObjectMember {}
 
 // MARK: - Convert String
 
 extension String: ObjectMember {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        switch container.object {
-        case .Bool, .Int, .Double, .String:
-            self = String(describing: container.object)
-        default:
-            throw DecodingError.dataConversionError(to: Self.self, in: container)
-        }
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    switch container.object {
+    case .Bool, .Int, .Double, .String:
+      self = String(describing: container.object)
+    default:
+      throw DecodingError.dataConversionError(to: Self.self, in: container)
     }
+  }
 
-    /// Convert to .String object.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        container.object = .String(self)
-    }
+  /// Convert to .String object.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    container.object = .String(self)
+  }
 
 }
 
 // MARK: - Convert Date
 
 let RFC3339DateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.locale = Locale(identifier: "en_US_POSIX")
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-    formatter.timeZone = TimeZone(secondsFromGMT: 0)
-    return formatter
+  let formatter = DateFormatter()
+  formatter.locale = Locale(identifier: "en_US_POSIX")
+  formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+  formatter.timeZone = TimeZone(secondsFromGMT: 0)
+  return formatter
 }()
 
 extension Date: ObjectMember {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        guard 
-            case let .String(value) = container.object,
-            let date = RFC3339DateFormatter.date(from: value)
-        else {
-            throw DecodingError.dataConversionError(to: Self.self, in: container)
-        }
-        self = date
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    guard
+      case let .String(value) = container.object,
+      let date = RFC3339DateFormatter.date(from: value)
+    else {
+      throw DecodingError.dataConversionError(to: Self.self, in: container)
     }
+    self = date
+  }
 
-    /// Convert to .String object.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        container.object = .String(RFC3339DateFormatter.string(from: self))
-    }
+  /// Convert to .String object.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    container.object = .String(RFC3339DateFormatter.string(from: self))
+  }
 }
 
 // MARK: - Convert Data
 
 extension Data: ObjectMember {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        guard 
-            case let .String(value) = container.object,
-            let data = Data(base64Encoded: value, options: .ignoreUnknownCharacters)
-        else {
-            throw DecodingError.dataConversionError(to: Self.self, in: container)
-        }
-        self = data
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    guard
+      case let .String(value) = container.object,
+      let data = Data(base64Encoded: value, options: .ignoreUnknownCharacters)
+    else {
+      throw DecodingError.dataConversionError(to: Self.self, in: container)
     }
+    self = data
+  }
 
-    /// Convert to .String object.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        container.object = .String(base64EncodedString())
-    }
+  /// Convert to .String object.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    container.object = .String(base64EncodedString())
+  }
 }
 
 // MARK: - Convert Enum
 
 extension ObjectDecodable where Self: RawRepresentable, Self.RawValue: ObjectDecodable {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        let rawValue = try RawValue(from: container)
-        guard let value = Self(rawValue: rawValue) else {
-            throw DecodingError.dataConversionError(to: Self.self, in: container)
-        }
-        self = value
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    let rawValue = try RawValue(from: container)
+    guard let value = Self(rawValue: rawValue) else {
+      throw DecodingError.dataConversionError(to: Self.self, in: container)
     }
+    self = value
+  }
 }
 
 extension ObjectEncodable where Self: RawRepresentable, Self.RawValue: ObjectEncodable {
 
-    /// Convert to object.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        try rawValue.encode(to: container)
-    }
+  /// Convert to object.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    try rawValue.encode(to: container)
+  }
 }
 
 // MARK: - Convert URL
 
 extension URL: ObjectMember {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        guard
-            case let .String(value) = container.object,
-            let url = URL(string: value)
-        else { throw DecodingError.dataConversionError(to: Self.self, in: container) }
-        self = url
-    }
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    guard
+      case let .String(value) = container.object,
+      let url = URL(string: value)
+    else { throw DecodingError.dataConversionError(to: Self.self, in: container) }
+    self = url
+  }
 
-    /// Convert to .String object.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        container.object = .String(absoluteString)
-    }
+  /// Convert to .String object.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    container.object = .String(absoluteString)
+  }
 
 }
 
@@ -315,49 +319,49 @@ extension URL: ObjectMember {
 
 extension Object: ObjectMember {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        self = container.object
-    }
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    self = container.object
+  }
 
-    /// Returns self.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        container.object = self
-    }
+  /// Returns self.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    container.object = self
+  }
 }
 
 // MARK: - Convert Optional
 
 extension Optional: ObjectDecodable where Wrapped: ObjectDecodable {
 
-    /// Creates from an object.
-    ///
-    /// - Parameter container: containing the `Object` to decode.
-    /// - throws: `DecodingError.dataCorruptedError` if the encountered object
-    ///   is invalid.
-    init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
-        switch container.object {
-        case .Nil:
-            self = .none
-        default:
-            self = try Wrapped(from: container)
-        }
+  /// Creates from an object.
+  ///
+  /// - Parameter container: containing the `Object` to decode.
+  /// - throws: `DecodingError.dataCorruptedError` if the encountered object
+  ///   is invalid.
+  init(from container: ObjectMemberDecoder.SingleValueContainer) throws {
+    switch container.object {
+    case .Nil:
+      self = .none
+    default:
+      self = try Wrapped(from: container)
     }
+  }
 }
 
 extension Optional: ObjectEncodable where Wrapped: ObjectEncodable {
 
-    /// Returns self.
-    func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
-        switch self {
-        case .none:
-            container.object = .Nil
-        case .some(let value):
-            try value.encode(to: container)
-        }
+  /// Returns self.
+  func encode(to container: ObjectMemberEncoder.SingleValueContainer) throws {
+    switch self {
+    case .none:
+      container.object = .Nil
+    case .some(let value):
+      try value.encode(to: container)
     }
+  }
 }

@@ -26,38 +26,38 @@ import Foundation
 /// Integer-indexed collection is not supported and will be always be convert to string-keyed.
 internal struct DynamicCodingKey: CodingKey {
 
-    /// The string to use in a named collection (e.g. a string-keyed dictionary).
-    let stringValue: String
+  /// The string to use in a named collection (e.g. a string-keyed dictionary).
+  let stringValue: String
 
-    /// The value to use in an integer-indexed collection (e.g. an int-keyed
-    /// dictionary).
-    let intValue: Int?
+  /// The value to use in an integer-indexed collection (e.g. an int-keyed
+  /// dictionary).
+  let intValue: Int?
 
-    /// Creates a new instance from the given string.
-    ///
-    /// If the string passed as `stringValue` does not correspond to any instance
-    /// of this type, the result is `nil`.
-    ///
-    /// - parameter stringValue: The string value of the desired key.
-    init?(stringValue: String) {
-        self.init(stringValue)
-    }
+  /// Creates a new instance from the given string.
+  ///
+  /// If the string passed as `stringValue` does not correspond to any instance
+  /// of this type, the result is `nil`.
+  ///
+  /// - parameter stringValue: The string value of the desired key.
+  init?(stringValue: String) {
+    self.init(stringValue)
+  }
 
-    /// Creates a new instance from the specified integer.
-    ///
-    /// If the value passed as `intValue` does not correspond to any instance of
-    /// this type, the result is `nil`.
-    ///
-    /// - parameter intValue: The integer value of the desired key.
-    init?(intValue: Int) {
-        self.init("\(intValue)")
-    }
+  /// Creates a new instance from the specified integer.
+  ///
+  /// If the value passed as `intValue` does not correspond to any instance of
+  /// this type, the result is `nil`.
+  ///
+  /// - parameter intValue: The integer value of the desired key.
+  init?(intValue: Int) {
+    self.init("\(intValue)")
+  }
 
-    /// Creates a new instance from the given string.
-    ///
-    /// - parameter stringValue: The string value of the desired key.
-    init(_ value: String) {
-        self.stringValue = value
-        self.intValue = nil
-    }
+  /// Creates a new instance from the given string.
+  ///
+  /// - parameter stringValue: The string value of the desired key.
+  init(_ value: String) {
+    self.stringValue = value
+    self.intValue = nil
+  }
 }
